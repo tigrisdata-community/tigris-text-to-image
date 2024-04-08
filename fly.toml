@@ -1,0 +1,19 @@
+# fly.toml app configuration file generated for tigris-text-to-image on 2024-04-04T17:02:32-07:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'tigris-text-to-image'
+primary_region = 'ord'
+vm.size = "a100-40gb"
+
+[[mounts]]
+  source = 'data'
+  destination = '/data'
+  initial_size = '20gb'
+
+[http_service]
+  internal_port = 7860
+  auto_stop_machines = true
+  processes = ["app"]
+
