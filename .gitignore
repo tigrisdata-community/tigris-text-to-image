@@ -1,2 +1,4 @@
 .dockerignore
 .idea
+.env
+venv

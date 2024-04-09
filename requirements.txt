@@ -1,12 +1,10 @@
-requirements.txtgradio>=4.19.2
-Pillow>=10.3.0
+gradio>=4.19.2
 python-dotenv==1.0.0
 transformers>=4.36.0
-#torch==2.1.0+cu118
-torch==2.1.0
+torch==2.1.0+cu118
+#torch==2.1.0
 diffusers[torch]==0.27.2
 psutil
-
 boto3~=1.34.79
 numpy~=1.26.4
 botocore~=1.34.79

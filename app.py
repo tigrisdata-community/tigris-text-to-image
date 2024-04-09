@@ -180,5 +180,4 @@ with gr.Blocks(
                          outputs=[image_output, metadata_input],
                          api_name="load_image")
 
-demo.queue(concurrency_count=4)
-demo.launch(server_name='0.0.0.0')
+demo.launch(server_name='0.0.0.0', max_threads=4, server_port=8888)

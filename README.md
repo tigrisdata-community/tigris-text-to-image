@@ -13,10 +13,10 @@ on fly to run the model on fly GPUs.
 
 ## Overview
 
-- 🚀 [Quickstart](#quickstart)
-- 💻 [Useful Commands](#useful-commands)
+- 🚀 [Quickstart](##Quickstart)
+- 💻 [Next Steps](#Next steps)
 
-## Quickstart
+## Quickstart 
 
 ### Step 0: Fork this repo and clone it
 
@@ -37,8 +37,8 @@ cp .env.example .env
 
 - Make sure you have a fly.io account and have fly CLI installed on your computer
 - `cd tigris-text-to-image`
-- Pick a name for your version of your app. App names on fly are global, so it has to be unique. For example `tigris-text-to-image-awesomeness`
-- Create the app on fly with `fly app create <your app name>` so for example `fly app create tigris-text-to-image-awesomeness`
+- Pick a name for your version of your app. App names on fly are global, so it has to be unique. For example `my-tigris-text-to-image-app`
+- Create the app on fly with `fly app create <your app name>` so for example `fly app create my-tigris-text-to-image-app`
 - Create the storage with `fly storage create`
 - You should get a list of credentials like below:
   <img width="859" alt="Screenshot 2024-03-24 at 5 40 36 PM" src="https://github.com/tigrisdata-community/multi-modal-starter-kit/assets/3489963/a400d444-8d5f-445e-a48a-1749f7595c47">
@@ -54,7 +54,27 @@ cp .env.example .env
   aws s3api put-bucket-cors --bucket BUCKET_NAME --cors-configuration file://cors.json --endpoint-url https://fly.storage.tigris.dev/
   ```
 
-### Step 2: Deploying on fly
+### Step 2: Run App
+Running the python app and it will run the gradio server on port 8888.
+
+Once this is running, you can generate an image using the text and then it allows saving the image to Tigris. 
+The bucket name is configured in your .env file. You can also optionally store metadata about this image which 
+Tigris will store along the image. Try to save few images and then load one of the existing image stored.
+
+#### Local Development
+For local development or to run the server locally, change the following (both are needed mainly to run model locally):
+  - Install torch package without cuda i.e. remove the suffix "+cu118" from torch package in `requirements.txt`
+  - Update the 'ARCH' in .env file to either 'mps' if you have M1/M2 chip or 'cpu'
+
+#### Check Tigris Dashboard
+
+```
+fly storage dashboard BUCKET_NAME
+```
+
+### Step 3: Deploying on fly
+
+(Note: Make sure the torch package in `requirements.txt` is with suffix `+cu118` and ARCH in .env is `cuda`)
 
 By now you should have a functional app, let's deploy it to [fly.io](https://fly.io/) cloud account that you setup in Step 1.
 
@@ -81,14 +101,10 @@ $ ➔ fly launch
 $ ➔ fly deploy
 ```
 
-### Step 3: Try it out
+:tada: All done. You should be able to use app on the URL provided by Fly.
 
-The app allows you generate an image from the text and then it lets you save the image to Tigris. By default, it is
-using the bucket in your .env file. You can also optionally store metadata about this image which Tigris will store
-along the image. Try to save few images and then load one of the existing image stored.
+## 💻 Next steps
 
-## Local Development
-
-If you want to tweak your app locally and run the generator then do the following:
-  - Remove the suffix "+cu118" from torch package in requirements.go
-  - Update the 'ARCH' environment to either 'mps' if you have M1/M2 or 'cpu'
+In a few steps, we learnt how to bootstrap a app using Tigris and 
+deploy it on Fly. Feel free to add more functionalities or customize App 
+for your use-case.
