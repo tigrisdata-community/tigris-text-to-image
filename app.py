@@ -3,21 +3,21 @@ import json
 import os
 import sys
 
-import PIL
 import gradio as gr
 import boto3
 
-from typing import Mapping, List, Dict
-
 import numpy as np
+import torch
 from PIL import Image
 from botocore.exceptions import ClientError
 from dotenv import load_dotenv
-from diffusers import AutoPipelineForText2Image
+from diffusers import StableDiffusionPipeline, EulerDiscreteScheduler
 
 load_dotenv()
 
-pipe = AutoPipelineForText2Image.from_pretrained("runwayml/stable-diffusion-v1-5")
+model_id = "stabilityai/stable-diffusion-2"
+scheduler = EulerDiscreteScheduler.from_pretrained(model_id, subfolder="scheduler")
+pipe = StableDiffusionPipeline.from_pretrained(model_id, scheduler=scheduler, safety_checker=None)
 pipe = pipe.to(os.environ['ARCH'])
 # Recommended if your computer has < 64 GB of RAM
 pipe.enable_attention_slicing()
@@ -32,9 +32,6 @@ svc = boto3.client(
 DEFAULT_PROMPT = "frankie with tigris"
 DEFAULT_IMAGE = Image.open("Tigris-fly-sticker.png")
 BUCKET_NAME = os.getenv('BUCKET_NAME')
-
-##https://fly.storage.tigris.dev
-print(BUCKET_NAME)
 
 
 def gen_image(prompt: str) -> Image.Image:
@@ -65,7 +62,7 @@ def load_image(key: str):
             Bucket=BUCKET_NAME,
             Key=key,
         )
-        return Image.open(io.BytesIO(response['Body'].read())), "foo"
+        return Image.open(io.BytesIO(response['Body'].read())), response['Metadata']
     except ClientError as e:
         error_code = e.response["Error"]["Code"]
         if error_code == "NotFound":
@@ -101,6 +98,7 @@ def save_image(inp_img: np.ndarray, key: str, metadata: str, prompt: str):
             Key=key,
             Metadata=metadata,
             Body=byte_writer.getvalue(),
+            ContentType="image/png",
         )
         gr.Info("Image " + key + " saved in Tigris")
     except ClientError as e:
@@ -131,14 +129,14 @@ with gr.Blocks(
                                     show_label=False,
                                     value=DEFAULT_IMAGE,
                                     width=600,
-                                    height=480,
+                                    height=600,
                                     type="pil",
                                     interactive=False)
         with gr.Column(scale=2):
             gr.Markdown(
                         """
                     ## Enter a phrase
-                    Generate images with huggingface [stable diffusion](https://github.com/runwayml/stable-diffusion) 
+                    Generate images with huggingface [stable diffusion 2](https://huggingface.co/stabilityai/stable-diffusion-2) 
                     model.
                     """
             )

@@ -7,7 +7,7 @@ on fly to run the model on fly GPUs.
 ## Stack
 
 - 💻 Image hosting: [Tigris](https://www.tigrisdata.com/)
-- 🦙 Inference: [Huggingface](https://github.com/runwayml/stable-diffusion), 
+- 🦙 Inference: [Huggingface](https://huggingface.co/stabilityai/stable-diffusion-2), 
 - 🔌 GPU: [Fly](https://fly.io/)
 - 🖌️ UI: [Gradio](https://www.gradio.app/)
 

@@ -24,7 +24,7 @@ RUN set -x \
         ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install --no-cache-dir --user -r requirements.txt \
+RUN pip3 install --user -r requirements.txt \
     --extra-index-url https://download.pytorch.org/whl/cu118
 
 CMD [ "python3" , "/app/app.py" ]
